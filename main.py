@@ -5,10 +5,11 @@ def handle_command(args):
     cmd = args[0].upper()
 
     if cmd == "PING":
-        # TODO: Return +PONG\r\n for no args
-        # TODO: Return bulk string for PING <message>
-        pass
-
+        if len(args) == 1:
+            return "+PONG\r\n"
+        
+        message = args[1]
+        return f"${len(message)}\r\n{message}\r\n"            
     return "-ERR unknown command\r\n"
 
 def main():
@@ -22,8 +23,7 @@ def main():
         sys.stdout.flush()
 
 def parse_args(line):
-    """Split a command line into arguments, handling quoted strings."""
-    args = []
+    args=[]
     current = ""
     in_quotes = False
     for ch in line:
@@ -39,6 +39,7 @@ def parse_args(line):
             current += ch
     if current:
         args.append(current)
+    
     return args
 
 if __name__ == "__main__":
