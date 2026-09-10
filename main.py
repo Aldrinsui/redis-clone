@@ -15,9 +15,12 @@ def handle_command(args):
     
     elif cmd == "ECHO":    
         message = args[1]
-        return bulk_string(message)           
+        return bulk_string(message)
+
+    elif cmd == "COMMAND" and len(args) > 1 and args[1].upper() == "DOCS":        
+        return "+OK\r\n"           
    
-    return "-ERR unknown command\r\n"
+    return f"-ERR unknown command '{cmd}'\r\n"
 
 def bulk_string(message):
     return f"${len(message)}\r\n{message}\r\n"
