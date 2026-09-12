@@ -1,10 +1,19 @@
+from dataclasses import make_dataclass
 import sys
 
 
+ARITY = {
+    "PING" : (0,1),
+    "ECHO" : (1,1),
+}
+
+def error_message(message):
+    return f"-{message}\r\n"
 
 def handle_command(args):
     """Process a Redis command and return the RESP response."""
     cmd = args[0].upper()
+    command_args = args[1:]
 
     if cmd == "PING":
         if len(args) == 1:
@@ -24,6 +33,16 @@ def handle_command(args):
 
 def bulk_string(message):
     return f"${len(message)}\r\n{message}\r\n"
+
+def error_handling(cmd,command_args):
+    low,high = ARITY[cmd]
+
+    if not low <= len(command_args) <= high:
+        return error_message(
+            f"ERR wrong number of arguments for '{cmd.lower()}' command"
+        )
+    
+    return None
 
 
 def main():
